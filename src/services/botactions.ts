@@ -76,20 +76,8 @@ let lastReplyTime = 0;
 
 export const replyToMessage = async (msg: Message) => {
   if (!msg.text) return;
-  // Always log detailed chat information for any message
-  const chatDetails = {
-    messageId: msg.message_id,
-    chatId: msg.chat.id,
-    chatType: msg.chat.type,
-    chatTitle: msg.chat.title,
-    text: msg.text,
-    from: msg.from?.username,
-  };
-
-  console.log('Received message:', chatDetails);
-
   // Check if message starts with a valid greeting (case insensitive)
-  const messageText = msg.text?.toLowerCase() || '';
+  const messageText = msg.text.toLowerCase() || '';
   const hasValidGreeting = VALID_GREETINGS.some((greeting) => messageText.startsWith(greeting));
 
   if (!hasValidGreeting) {
