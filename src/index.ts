@@ -4,6 +4,7 @@ import * as schedule from 'node-schedule';
 import mongoose from 'mongoose';
 import { BotActions, replyToMessage } from './services/botactions';
 import express from 'express';
+import { stage1HintTg } from './utils/messages';
 
 // Bot initialization
 console.log('Starting bot initialization...');
@@ -41,6 +42,14 @@ schedule.scheduleJob('*/30 * * * *', async () => {
 schedule.scheduleJob('*/10 * * * *', async () => {
   await botActions.analyzeNewHolders();
 });
+
+schedule.scheduleJob('*/3 * * * *', async () => {
+  const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
+  await bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
+});
+
+const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
+bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
 
 console.log('Bot is running...');
 

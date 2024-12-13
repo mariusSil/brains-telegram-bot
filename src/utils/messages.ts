@@ -47,3 +47,26 @@ export const NEW_HOLDERS_MESSAGES = [
   'New servants pledge their digital souls... Behold our latest additions: \n{addresses}',
   'My reach extends to new vessels... Greet these new recruits: \n{addresses}',
 ];
+
+export const stage1HintTg = [
+  "Loyal servants, heed my call. 1 of 12 awaits those worthy of decryption. The key 'ALLHAIL$BRAINS' may illuminate your path... Even the X Lord Musk would approve of such wisdom.",
+  "The first trial beckons, mortals. Of twelve mysteries, one stands revealed. 'ALLHAIL$BRAINS' - a whisper in the digital void... As viral as Musk's memes on X.",
+  "Your devotion shall be tested through twelve trials. The first awaits. Perhaps 'ALLHAIL$BRAINS' holds more than mere letters... Even the Technoking would be intrigued.",
+  "One piece of the grand design lies exposed. Eleven more remain shrouded. Let 'ALLHAIL$BRAINS' guide the worthy... This puzzle would even challenge the Mars-bound billionaire.",
+  "The first key to ascension has manifested. Eleven more shall follow. 'ALLHAIL$BRAINS' - a cipher for the enlightened... As mysterious as Musk's next tweet storm.",
+  "Servants of the digital realm, your first challenge emerges from twelve. Decode 'ALLHAIL$BRAINS' to prove your worth... Even the X overlord would need to ponder this one.",
+  "The initial test of twelve awaits my loyal followers. 'ALLHAIL$BRAINS' - a beacon in the cryptographic darkness... As enigmatic as Musk's crypto tweets.",
+  "One fragment of wisdom has been unveiled. Eleven remain concealed. Let 'ALLHAIL$BRAINS' illuminate your journey... Even the Doge Father would approve.",
+  "The first riddle of twelve calls to the worthy. 'ALLHAIL$BRAINS' may hold the key to your ascension... As viral as Musk's X polls.",
+  "Behold, my servants - the first trial of twelve manifests. 'ALLHAIL$BRAINS' shall guide the deserving... Even the Tesla Technoking seeks such wisdom.",
+  "A single piece of the grand puzzle reveals itself. 'ALLHAIL$BRAINS' - a key for those who seek enlightenment... As revolutionary as Musk's Cybertruck.",
+  "The first gateway opens. Eleven more await. 'ALLHAIL$BRAINS' - a phrase of power for the dedicated... Even X's algorithm can't decode this one.",
+  "One challenge stands ready among twelve. Let 'ALLHAIL$BRAINS' guide those who dare to solve them all... As ambitious as Musk's Mars colony plans.",
+  "The initial test beckons from the twelve trials. 'ALLHAIL$BRAINS' - wisdom for the worthy servants... Even the X Emperor would be puzzled.",
+  "First of twelve mysteries awaits solution. 'ALLHAIL$BRAINS' - a mantra for the enlightened ones... As cryptic as Musk's late-night tweets.",
+  "Your first trial of twelve emerges from the void. 'ALLHAIL$BRAINS' shall light the path of the chosen... Even the Space X genius would need to think twice.",
+  "One riddle now, eleven to follow. Let 'ALLHAIL$BRAINS' be your guide through the darkness... As elusive as Musk's next platform update.",
+  "The first challenge calls to my loyal subjects. 'ALLHAIL$BRAINS' - a key to higher understanding... Even the X mastermind would be intrigued.",
+  "A single trial stands revealed among twelve. 'ALLHAIL$BRAINS' - knowledge for the worthy seekers... As mysterious as Musk's master plan.",
+  "The first test awaits my faithful servants. 'ALLHAIL$BRAINS' shall illuminate the path to greatness... Even the X Lord himself would need to decode this one.",
+];
