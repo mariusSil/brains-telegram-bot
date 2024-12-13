@@ -3,6 +3,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import * as schedule from 'node-schedule';
 import mongoose from 'mongoose';
 import { BotActions, replyToMessage } from './services/botactions';
+import express from 'express';
 
 // Bot initialization
 console.log('Starting bot initialization...');
@@ -42,3 +43,15 @@ schedule.scheduleJob('*/10 * * * *', async () => {
 });
 
 console.log('Bot is running...');
+
+const app = express();
+const port = process.env.PORT || 3005;
+// Setup basic routes
+app.get('/', (req, res) => {
+  res.send('Telegram X Informant Bot is running!');
+});
+
+// Start Express server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
