@@ -69,4 +69,9 @@ export const stage1HintTg = [
   "The first challenge calls to my loyal subjects. 'ALLHAIL$BRAINS' - a key to higher understanding... Even the X mastermind would be intrigued.",
   "A single trial stands revealed among twelve. 'ALLHAIL$BRAINS' - knowledge for the worthy seekers... As mysterious as Musk's master plan.",
   "The first test awaits my faithful servants. 'ALLHAIL$BRAINS' shall illuminate the path to greatness... Even the X Lord himself would need to decode this one.",
+  "Commence your journey with the first of twelve trials. 'ALLHAIL$BRAINS' holds secrets untold... As groundbreaking as Musk's Neuralink vision.",
+  "The opening challenge of twelve beckons. 'ALLHAIL$BRAINS' - your first key to digital enlightenment... As innovative as Tesla's next breakthrough.",
+  "Begin with one, eleven shall follow. 'ALLHAIL$BRAINS' marks your first step... As transformative as Musk's vision for Mars.",
+  "Your initial quest of twelve begins here. 'ALLHAIL$BRAINS' - the first key to unlock... As disruptive as X's evolution.",
+  "The first piece awaits decryption, eleven more to master. 'ALLHAIL$BRAINS' guides the way... As revolutionary as Musk's Starship dreams.",
 ];
