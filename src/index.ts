@@ -52,14 +52,14 @@ schedule.scheduleJob('*/10 * * * *', async () => {
   await botActions.analyzeNewHolders();
 });
 
-schedule.scheduleJob('*/15 * * * *', async () => {
+schedule.scheduleJob('*/90 * * * *', async () => {
   if (ContextService.isBotTooActive()) return;
   const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
   await bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
 });
 
-const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
-bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
+// const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
+// bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
 
 console.log('Bot is running...');
 
