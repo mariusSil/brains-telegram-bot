@@ -193,7 +193,7 @@ export class BotActions {
         .filter((change) => change.value > 0)
         .sort((a, b) => b.value - a.value)[0];
 
-      if (highestChange) {
+      if (highestChange && highestChange.value > 0) {
         const positiveChanges = priceChanges.filter((change) => change.value > 0);
         const highestPositiveChange = positiveChanges.sort((a, b) => b.value - a.value)[0];
 
