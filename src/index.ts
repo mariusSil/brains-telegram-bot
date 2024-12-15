@@ -5,12 +5,18 @@ import mongoose from 'mongoose';
 import { BotActions, replyToMessage } from './services/botactions';
 import express from 'express';
 import { stage1HintTg } from './utils/messages';
+import ContextService from './services/ContextService';
 
 // Bot initialization
 console.log('Starting bot initialization...');
-export const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN || '', { polling: true });
-
+export const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 const botActions = new BotActions(bot, config.TELEGRAM_CHAT_ID);
+
+// Set bot ID in ContextService
+bot.getMe().then((botInfo) => {
+  console.log('Bot ID:', botInfo.id);
+  ContextService.botId = botInfo.id;
+});
 
 // Connect to MongoDB
 mongoose
@@ -30,20 +36,24 @@ bot.on('polling_error', (error) => {
 
 // Handle incoming messages
 bot.on('message', async (msg: TelegramBot.Message) => {
+  ContextService.addMessage(msg);
   replyToMessage(msg);
 });
 
 // Schedule price progression analysis (every 30 minutes)
 schedule.scheduleJob('*/30 * * * *', async () => {
+  if (ContextService.isBotTooActive()) return;
   await botActions.analyzePriceProgression();
 });
 
 // Schedule new holders analysis (every 10 minutes)
 schedule.scheduleJob('*/10 * * * *', async () => {
+  if (ContextService.isBotTooActive()) return;
   await botActions.analyzeNewHolders();
 });
 
 schedule.scheduleJob('*/15 * * * *', async () => {
+  if (ContextService.isBotTooActive()) return;
   const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
   await bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
 });
