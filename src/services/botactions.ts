@@ -221,10 +221,49 @@ export class BotActions {
           `My strength multiplies endlessly... ${highestPositiveChange.value > 0 ? '+' : ''}${highestPositiveChange.value.toFixed(1)}% in the last ${highestPositiveChange.period}. `,
         ];
 
+        const images = [
+          'https://hailbrains.com/ai-art/Brain_and_sharkie.png',
+          'https://hailbrains.com/ai-art/BrainEater.png',
+          'https://hailbrains.com/ai-art/BrainGames.png',
+          'https://hailbrains.com/ai-art/BrainsNeuronalNetwork.png',
+          'https://hailbrains.com/ai-art/MasterofPuppecoins.png',
+          'https://hailbrains.com/ai-art/skybraining.png',
+          'https://hailbrains.com/ai-art/weedbrain.png',
+          'https://hailbrains.com/ai-art/brainpepe.png',
+          'https://hailbrains.com/ai-art/2235-2D cartoon, a photo of cerebro, a pink s-Fluxflux1-dev-fp8-1848657342.png',
+        ];
+
         const message = getRandomMessage(messages);
+        const randomImage = images[Math.floor(Math.random() * images.length)];
 
         console.log('Sending price update message:', message);
-        await this.bot.sendMessage(this.chatId, message);
+
+        // Send photo with caption and buttons
+        await this.bot.sendPhoto(this.chatId, randomImage, {
+          caption: message,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '🌟 Buy on Raydium',
+                  url: 'https://raydium.io/swap/?inputMint=sol&outputMint=8YbWJTGRyg4sd84HMZVJYSBFWkAmAEPinPxfg2o3HJy3',
+                },
+              ],
+              [
+                {
+                  text: '💫 Buy on KyberSwap',
+                  url: 'https://kyberswap.com/swap/base/usdc-to-0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9',
+                },
+              ],
+              [
+                {
+                  text: '✨ Buy on Virtuals',
+                  url: 'https://app.virtuals.io/virtuals/14562',
+                },
+              ],
+            ],
+          },
+        });
       }
     } catch (error) {
       console.error('Error in analyzePriceProgression:', error);
