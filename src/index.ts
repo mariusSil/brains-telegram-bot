@@ -53,13 +53,21 @@ schedule.scheduleJob('*/10 * * * *', async () => {
 });
 
 schedule.scheduleJob('*/90 * * * *', async () => {
-  if (ContextService.isBotTooActive()) return;
   const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
-  await bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
+  await bot.sendPhoto(config.TELEGRAM_CHAT_ID, 'https://hailbrains.com/asset-uploads/act-1.png', {
+    caption: randomMessage,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: '🔍 Find Clues on Instagram',
+            url: 'https://instagram.com/hailbrains',
+          },
+        ],
+      ],
+    },
+  });
 });
-
-// const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
-// bot.sendMessage(config.TELEGRAM_CHAT_ID, randomMessage);
 
 console.log('Bot is running...');
 
