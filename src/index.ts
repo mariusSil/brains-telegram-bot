@@ -52,22 +52,22 @@ schedule.scheduleJob('*/10 * * * *', async () => {
   await botActions.analyzeNewHolders();
 });
 
-schedule.scheduleJob('*/90 * * * *', async () => {
-  const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
-  await bot.sendPhoto(config.TELEGRAM_CHAT_ID, 'https://hailbrains.com/asset-uploads/act-1.png', {
-    caption: randomMessage,
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: '🔍 Find Clues on Instagram',
-            url: 'https://instagram.com/hailbrains',
-          },
-        ],
-      ],
-    },
-  });
-});
+// schedule.scheduleJob('*/90 * * * *', async () => {
+//   const randomMessage = stage1HintTg[Math.floor(Math.random() * stage1HintTg.length)];
+//   await bot.sendPhoto(config.TELEGRAM_CHAT_ID, 'https://hailbrains.com/asset-uploads/act-1.png', {
+//     caption: randomMessage,
+//     reply_markup: {
+//       inline_keyboard: [
+//         [
+//           {
+//             text: '🔍 Find Clues on Instagram',
+//             url: 'https://instagram.com/hailbrains',
+//           },
+//         ],
+//       ],
+//     },
+//   });
+// });
 
 console.log('Bot is running...');
 
