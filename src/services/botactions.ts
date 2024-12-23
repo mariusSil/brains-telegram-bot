@@ -245,14 +245,20 @@ export class BotActions {
             inline_keyboard: [
               [
                 {
-                  text: '🌟 Buy on Raydium',
-                  url: 'https://raydium.io/swap/?inputMint=sol&outputMint=8YbWJTGRyg4sd84HMZVJYSBFWkAmAEPinPxfg2o3HJy3',
+                  text: '🔥 Buy on OKX DEX',
+                  url: 'https://www.okx.com/web3/dex-swap?inputChain=8453&inputCurrency=0x833589fcd6edb6e08f4c7c32d4f71b54bda02913&outputChain=8453&outputCurrency=0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9',
                 },
               ],
               [
                 {
-                  text: '💫 Buy on KyberSwap',
+                  text: '🌟 Buy on KyberSwap',
                   url: 'https://kyberswap.com/swap/base/usdc-to-0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9',
+                },
+              ],
+              [
+                {
+                  text: '💫 Buy on Raydium',
+                  url: 'https://raydium.io/swap/?inputMint=sol&outputMint=8YbWJTGRyg4sd84HMZVJYSBFWkAmAEPinPxfg2o3HJy3',
                 },
               ],
               [
