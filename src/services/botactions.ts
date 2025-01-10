@@ -252,7 +252,7 @@ export class BotActions {
               [
                 {
                   name: '🌟 Buy on Uniswap',
-                  url: 'https://app.uniswap.org/swap?chain=base&inputCurrency=0x0b3e328455c4059eeb9e3f84b5543f74e24e7e1b&outputCurrency=0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9&value=137&field=input',
+                  url: 'https://app.uniswap.org/swap?chain=base&inputCurrency=0x0b3e328455c4059eeb9e3f84b5543f74e24e7e1b&outputCurrency=0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9&value=100&field=input',
                 },
               ],
               [
