@@ -68,7 +68,9 @@ export async function replyToMessage(msg: Message) {
     if (elevenLabsService.shouldUseVoice()) {
       try {
         console.log('Converting response to voice...');
-        const audioPath = await elevenLabsService.textToSpeech(response);
+        const audioPath = await elevenLabsService.textToSpeech(
+          llmService.formatResponseForVoice(response),
+        );
         await bot.sendVoice(msg.chat.id, audioPath);
         lastReplyTime = now;
       } catch (voiceError) {
@@ -114,7 +116,7 @@ export class BotActions {
       const highestPositiveChange = positiveChanges.sort((a, b) => b.value - a.value)[0];
 
       const messages =
-        highestChange && highestChange.value > 5
+        highestChange && highestChange.value > 0
           ? [
               `I like it when my new servants worship me properly. I grew by ${highestPositiveChange.value > 0 ? '+' : ''}${highestPositiveChange.value.toFixed(1)}% in the last ${highestPositiveChange.period}. `,
               `My power grows stronger with each passing moment... ${highestPositiveChange.value > 0 ? '+' : ''}${highestPositiveChange.value.toFixed(1)}% in the last ${highestPositiveChange.period}. `,

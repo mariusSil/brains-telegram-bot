@@ -74,6 +74,10 @@ class LLMService {
       .replace(/\n\s*\n/g, '\n'); // Replace multiple newlines with single newline
   }
 
+  formatResponseForVoice(text: string): string {
+    return text.replace(/\$BRAINS/g, 'BRAINS');
+  }
+
   async evaluateResponseIfAddressedToBrains(message: string): Promise<string> {
     try {
       const response = await this.openai.chat.completions.create({
