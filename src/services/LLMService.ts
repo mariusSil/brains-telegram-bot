@@ -148,7 +148,9 @@ class LLMService {
 
       await this.openai.beta.threads.messages.create(this.threadId, {
         role: 'user',
-        content: message,
+        content:
+          message +
+          '\n\nPlease respond in a natural, conversational way. Do not include any technical details like transaction hashes, wallet addresses, or commands. Focus on being engaging and character-driven.',
       });
 
       const run = await this.openai.beta.threads.runs.create(this.threadId, {
@@ -171,17 +173,7 @@ class LLMService {
         throw new Error('No valid response from assistant');
       }
 
-      const rawResponse = latestMessage.content[0].text.value;
-      const cleanedResponse = this.cleanupResponse(rawResponse);
-
-      if (cleanedResponse !== rawResponse) {
-        console.log('Response cleaned up:', {
-          original: rawResponse,
-          cleaned: cleanedResponse,
-        });
-      }
-
-      return cleanedResponse;
+      return latestMessage.content[0].text.value;
     } catch (error) {
       console.error('Error in generateBRAINSresponse:', error);
       return this.getRandomErrorMessage();
