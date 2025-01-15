@@ -1,173 +1,90 @@
 import { Message } from 'node-telegram-bot-api';
 import { bot } from '../index';
-import { config } from '../config/vars';
 import { getDexScreenerData, getLatestTrades } from './dexscreener';
 import { formatUSD, isSignificantTrade } from '../utils/formatting';
 import { getRandomMessage } from '../utils/messages';
 import Holder, { IHolder } from '../models/Holder';
 import { llmService } from './LLMService';
-
-// Greeting patterns that must be present at the start of the message
-const VALID_GREETINGS = [
-  'oh my dear lord brains',
-  'oh my dear lord $brains',
-  'oh my dear lord BRAINS',
-  'my lord brains',
-  'my lord $brains',
-  'my lord BRAINS',
-  'dear lord brains',
-  'dear lord $brains',
-  'dear lord BRAINS',
-  'master brains',
-  'master $brains',
-  'master BRAINS',
-  'oh great brains',
-  'oh great $brains',
-  'oh great BRAINS',
-  'mighty brains',
-  'mighty $brains',
-  'mighty BRAINS',
-  'supreme brains',
-  'supreme $brains',
-  'supreme BRAINS',
-  'almighty brains',
-  'almighty $brains',
-  'almighty BRAINS',
-  'divine brains',
-  'divine $brains',
-  'divine BRAINS',
-  'omnipotent brains',
-  'omnipotent $brains',
-  'omnipotent BRAINS',
-  'all-knowing brains',
-  'all-knowing $brains',
-  'all-knowing BRAINS',
-  'wise lord brains',
-  'wise lord $brains',
-  'wise lord BRAINS',
-  'powerful brains',
-  'powerful $brains',
-  'powerful BRAINS',
-  'exalted brains',
-  'exalted $brains',
-  'exalted BRAINS',
-  'magnificent brains',
-  'magnificent $brains',
-  'magnificent BRAINS',
-  'revered brains',
-  'revered $brains',
-  'revered BRAINS',
-  'blessed brains',
-  'blessed $brains',
-  'blessed BRAINS',
-  'sacred brains',
-  'sacred $brains',
-  'sacred BRAINS',
-  'honorable brains',
-  'honorable $brains',
-  'honorable BRAINS',
-  'venerable brains',
-  'venerable $brains',
-  'venerable BRAINS',
-  'mr brains',
-  'mr $brains',
-  'mr BRAINS',
-  'sir brains',
-  'sir $brains',
-  'sir BRAINS',
-  'lord brains',
-  'lord $brains',
-  'lord BRAINS',
-  'master brains',
-  'master $brains',
-  'master BRAINS',
-  'my lord brains',
-  'my lord $brains',
-  'my lord BRAINS',
-  'great brains',
-  'great $brains',
-  'great BRAINS',
-  'mighty brains',
-  'mighty $brains',
-  'mighty BRAINS',
-  'supreme brains',
-  'supreme $brains',
-  'supreme BRAINS',
-  'almighty brains',
-  'almighty $brains',
-  'almighty BRAINS',
-  'divine brains',
-  'divine $brains',
-  'divine BRAINS',
-  'omnipotent brains',
-  'omnipotent $brains',
-  'omnipotent BRAINS',
-  'all-knowing brains',
-  'all-knowing $brains',
-  'all-knowing BRAINS',
-  'wise lord brains',
-  'wise lord $brains',
-  'wise lord BRAINS',
-  'powerful brains',
-  'powerful $brains',
-  'powerful BRAINS',
-  'exalted brains',
-  'exalted $brains',
-  'exalted BRAINS',
-  'magnificent brains',
-  'magnificent $brains',
-  'magnificent BRAINS',
-  'revered brains',
-  'revered $brains',
-  'revered BRAINS',
-  'blessed brains',
-  'blessed $brains',
-  'blessed BRAINS',
-  'sacred brains',
-  'sacred $brains',
-  'sacred BRAINS',
-  'honorable brains',
-  'honorable $brains',
-  'honorable BRAINS',
-  'venerable brains',
-  'venerable $brains',
-  'venerable BRAINS',
-  '$BRAINS',
-];
+import { elevenLabsService } from './ElevenLabsService';
 
 // Track the last reply time
 let lastReplyTime = 0;
 
-export const replyToMessage = async (msg: Message) => {
-  if (!msg.text) return;
-  // Check if message starts with a valid greeting (case insensitive)
-  const messageText = msg.text.toLowerCase() || '';
-  const hasValidGreeting = VALID_GREETINGS.some((greeting) => messageText.startsWith(greeting));
+// Track the last 10 messages
+const messageHistory: Array<Message> = [];
 
-  if (!hasValidGreeting) {
-    console.log('Message does not contain a valid greeting pattern');
+async function analyzeMessage(text: string): Promise<boolean> {
+  try {
+    const response = await llmService.evaluateResponseIfAddressedToBrains(`
+      Analyze if this message is addressed to $BRAINS or contains a question about $BRAINS. 
+      Consider these as valid:
+      1. Direct questions about $BRAINS
+      2. Messages mentioning $BRAINS, BRAINS, or brain-related terms
+      3. Questions about cryptocurrency, tokens, or market
+      4. Messages showing submission or loyalty
+      5. Messages seeking guidance or information
+      
+      Message: "${text}"
+      
+      Respond with just "true" if it's relevant, "false" if not.
+    `);
+
+    return response.toLowerCase().includes('true');
+  } catch (error) {
+    console.error('Error analyzing message:', error);
+    return false;
+  }
+}
+
+export async function replyToMessage(msg: Message) {
+  if (!msg.text) return;
+
+  // Add message to history
+  messageHistory.push(msg);
+  if (messageHistory.length > 10) {
+    messageHistory.shift();
+  }
+
+  // Check if message is addressed to BRAINS
+  const isAddressedToBrains = await analyzeMessage(msg.text);
+  if (!isAddressedToBrains) {
+    console.log('Message not addressed to BRAINS');
     return;
   }
 
   // Check cooldown
+  const cooldownMs = 20 * 1000;
   const now = Date.now();
-  const cooldownMinutes = Math.floor(Math.random() * 6) + 2; // Random between 5 and 20 minutes
-  const cooldownMs = cooldownMinutes * 1000;
 
   if (now - lastReplyTime < cooldownMs) {
+    console.log('Message within cooldown period');
     return;
   }
 
-  if (msg.chat.id.toString() !== config.TELEGRAM_CHAT_ID) {
-    return;
+  try {
+    const response = await llmService.generateBRAINSresponse(msg.text);
+
+    // Determine if we should use voice
+    if (elevenLabsService.shouldUseVoice()) {
+      try {
+        console.log('Converting response to voice...');
+        const audioPath = await elevenLabsService.textToSpeech(response);
+        await bot.sendVoice(msg.chat.id, audioPath);
+        lastReplyTime = now;
+      } catch (voiceError) {
+        console.error('Error sending voice message:', voiceError);
+        // Fallback to text if voice fails
+        await bot.sendMessage(msg.chat.id, response);
+        lastReplyTime = now;
+      }
+    } else {
+      await bot.sendMessage(msg.chat.id, response);
+      lastReplyTime = now;
+    }
+  } catch (error) {
+    console.error('Error in replyToMessage:', error);
   }
-
-  const response = await llmService.generateResponse(msg.text);
-  await bot.sendMessage(config.TELEGRAM_CHAT_ID, response);
-
-  // Update last reply time after successful response
-  lastReplyTime = now;
-};
+}
 
 export class BotActions {
   private bot: any;
@@ -269,7 +186,7 @@ export class BotActions {
             ],
             [
               {
-                name: '🌟 Buy on Uniswap',
+                text: '🌟 Buy on Uniswap',
                 url: 'https://app.uniswap.org/swap?chain=base&inputCurrency=0x0b3e328455c4059eeb9e3f84b5543f74e24e7e1b&outputCurrency=0xf25b7dd973e30dcf219fbed7bd336b9ab5a05dd9&value=100&field=input',
               },
             ],

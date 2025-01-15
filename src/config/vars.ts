@@ -9,5 +9,6 @@ export const config = {
   DEXSCREENER_PAIR_ADDRESS: process.env.DEXSCREENER_PAIR_ADDRESS || '',
   TWITTER_POST: 'https://x.com/HailBrains/status/1867132056188366851',
   MONGODB_URI: process.env.MONGODB_URI || '',
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+  ELEVENLABS: process.env.ELEVENLABS || '',
 };

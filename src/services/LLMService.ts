@@ -5,6 +5,7 @@ import { config } from '../config/vars';
 class LLMService {
   private openai: OpenAI;
   private systemPrompt: string;
+  private threadId: string | null = null;
 
   constructor() {
     if (!config.OPENAI_API_KEY) {
@@ -63,6 +64,46 @@ class LLMService {
     return errorMessages[Math.floor(Math.random() * errorMessages.length)];
   }
 
+  private cleanupResponse(response: string): string {
+    return response
+      .replace(/【[^】]*】/g, '') // Remove Japanese-style citations
+      .replace(/\[\d+:\d+†[^\]]*\]/g, '') // Remove citation markers like [4:0†source]
+      .replace(/\[\d+\]/g, '') // Remove simple number citations [1], [2], etc.
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/^\s+|\s+$/g, '') // Trim whitespace
+      .replace(/\n\s*\n/g, '\n'); // Replace multiple newlines with single newline
+  }
+
+  async evaluateResponseIfAddressedToBrains(message: string): Promise<string> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-3.5-turbo-1106',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a message classifier. Your only task is to determine if a message is addressed to or about $BRAINS. Respond with ONLY "true" or "false". Consider messages valid if they: 1) Directly address $BRAINS/BRAINS 2) Ask about $BRAINS/cryptocurrency 3) Show submission/loyalty 4) Seek information about $BRAINS.',
+          },
+          {
+            role: 'user',
+            content: message,
+          },
+        ],
+        temperature: 0.1, // Very low for consistent true/false responses
+        max_tokens: 10, // Only need enough for true/false
+        presence_penalty: 0,
+        frequency_penalty: 0,
+        response_format: { type: 'text' },
+      });
+
+      const reply = response.choices[0]?.message?.content?.trim().toLowerCase() || 'false';
+      return reply === 'true' ? 'true' : 'false';
+    } catch (error) {
+      logger.error('Error in message classification:', error);
+      return 'false'; // Default to false on error
+    }
+  }
+
   async generateResponse(message: string): Promise<string> {
     try {
       const response = await this.openai.chat.completions.create({
@@ -93,6 +134,56 @@ class LLMService {
       return reply;
     } catch (error) {
       logger.error('Error generating AI response:', error);
+      return this.getRandomErrorMessage();
+    }
+  }
+
+  async generateBRAINSresponse(message: string): Promise<string> {
+    try {
+      if (!this.threadId) {
+        const thread = await this.openai.beta.threads.create();
+        this.threadId = thread.id;
+        console.log('Created new thread:', this.threadId);
+      }
+
+      await this.openai.beta.threads.messages.create(this.threadId, {
+        role: 'user',
+        content: message,
+      });
+
+      const run = await this.openai.beta.threads.runs.create(this.threadId, {
+        assistant_id: 'asst_B60Ecolm980Q0vWIpnv1CKQh',
+      });
+
+      let runStatus = await this.openai.beta.threads.runs.retrieve(this.threadId, run.id);
+      while (runStatus.status !== 'completed') {
+        if (runStatus.status === 'failed') {
+          throw new Error('Assistant run failed: ' + runStatus.last_error?.message);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        runStatus = await this.openai.beta.threads.runs.retrieve(this.threadId, run.id);
+      }
+
+      const messages = await this.openai.beta.threads.messages.list(this.threadId);
+      const latestMessage = messages.data[0];
+
+      if (!latestMessage || !latestMessage.content[0] || latestMessage.content[0].type !== 'text') {
+        throw new Error('No valid response from assistant');
+      }
+
+      const rawResponse = latestMessage.content[0].text.value;
+      const cleanedResponse = this.cleanupResponse(rawResponse);
+
+      if (cleanedResponse !== rawResponse) {
+        console.log('Response cleaned up:', {
+          original: rawResponse,
+          cleaned: cleanedResponse,
+        });
+      }
+
+      return cleanedResponse;
+    } catch (error) {
+      console.error('Error in generateBRAINSresponse:', error);
       return this.getRandomErrorMessage();
     }
   }
