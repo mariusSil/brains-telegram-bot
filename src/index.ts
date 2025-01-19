@@ -4,17 +4,18 @@ import * as schedule from 'node-schedule';
 import mongoose from 'mongoose';
 import { BotActions, replyToMessage } from './services/botactions';
 import express from 'express';
-import { stage1HintTg } from './utils/messages';
 import ContextService from './services/ContextService';
 
 // Bot initialization
 console.log('Starting bot initialization...');
 export const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 const botActions = new BotActions(bot, config.TELEGRAM_CHAT_ID);
-
+let botInfo_: TelegramBot.User | null = null;
+export const getBotInfo = () => botInfo_;
 // Set bot ID in ContextService
 bot.getMe().then((botInfo) => {
-  console.log('Bot ID:', botInfo.id);
+  botInfo_ = botInfo;
+  console.log('Bot ID:', botInfo.id, botInfo.username);
   ContextService.botId = botInfo.id;
 });
 
@@ -36,6 +37,7 @@ bot.on('polling_error', (error) => {
 
 // Handle incoming messages
 bot.on('message', async (msg: TelegramBot.Message) => {
+  console.log('test', msg);
   ContextService.addMessage(msg);
   replyToMessage(msg);
 });

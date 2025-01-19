@@ -1,5 +1,5 @@
 import { Message } from 'node-telegram-bot-api';
-import { bot } from '../index';
+import { bot, getBotInfo } from '../index';
 import { getDexScreenerData, getLatestTrades } from './dexscreener';
 import { formatUSD, isSignificantTrade } from '../utils/formatting';
 import { getRandomMessage } from '../utils/messages';
@@ -14,6 +14,7 @@ let lastReplyTime = 0;
 const messageHistory: Array<Message> = [];
 
 async function analyzeMessage(text: string): Promise<boolean> {
+  if (!text.toLowerCase().includes('brains')) return false;
   try {
     const response = await llmService.evaluateResponseIfAddressedToBrains(`
       Analyze if this message is addressed to $BRAINS or contains a question about $BRAINS. 
@@ -38,7 +39,10 @@ async function analyzeMessage(text: string): Promise<boolean> {
 
 export async function replyToMessage(msg: Message) {
   if (!msg.text) return;
-
+  const bot_ = getBotInfo();
+  if (!bot_) return;
+  if (bot_.id === msg.from?.id) return;
+  if (msg.from?.is_bot) return;
   // Add message to history
   messageHistory.push(msg);
   if (messageHistory.length > 10) {
